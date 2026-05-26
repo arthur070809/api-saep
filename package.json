@@ -1,0 +1,29 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/arthur070809/api#readme",
+  "bugs": {
+    "url": "https://github.com/arthur070809/api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arthur070809/api.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "http": "^0.0.1-security",
+    "mysql2": "^3.22.4",
+    "nodemon": "^3.1.14"
+  }
+}
