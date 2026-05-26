@@ -1,4 +1,3 @@
-// ...existing code...
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
@@ -14,16 +13,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET /produtos/estoque-por-categoria -> total por categoria (view vw_estoque)
-router.get('/estoque-por-categoria', async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT categoria, SUM(quantidade) as total FROM vw_estoque GROUP BY categoria');
-        res.json(rows);
-    } catch (error) {
-        console.error('Erro ao buscar estoque por categoria:', error);
-        res.status(500).json({ error: 'Erro ao buscar estoque por categoria' });
-    }   
-});
 
 // POST /produtos -> cria produto
 router.post('/', async (req, res) => {
@@ -37,11 +26,27 @@ router.post('/', async (req, res) => {
             'INSERT INTO produtos (nome, valor, quantidade, categoria) VALUES (?, ?, ?, ?)',
             [nome, valor, quantidade, categoria]
         );
+        console.log('Produto criado com sucesso',
+            'nome:', nome, 
+            'valor:', valor, 
+            'quantidade:', quantidade, 
+            'categoria:', categoria);
         res.status(201).json({ id: result.insertId, nome, valor, quantidade, categoria });
     } catch (error) {
         console.error('Erro ao criar produto:', error.message);
         res.status(500).json({ error: 'Erro ao criar produto' });
     }
+});
+
+// GET /produtos/estoque-por-categoria -> total por categoria (view vw_estoque)
+router.get('/estoque-por-categoria', async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT categoria, SUM(quantidade) as total FROM vw_estoque GROUP BY categoria');
+        res.json(rows);
+    } catch (error) {
+        console.error('Erro ao buscar estoque por categoria:', error);
+        res.status(500).json({ error: 'Erro ao buscar estoque por categoria' });
+    }   
 });
 
 module.exports = router;
