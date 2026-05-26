@@ -1,3 +1,4 @@
+// ...existing code...
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 
@@ -8,17 +9,18 @@ const connection = mysql.createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+    port: parseInt(process.env.DB_PORT, 10) || 3307,
+
 });
 
 
 (async () => {
     try {
         const conn = await connection.getConnection();
-        console.log('Conectado ao MySQL com sucesso!');
+        console.log('Conectado ao mysql com sucesso');
         conn.release();
     } catch (error) {
-        console.error('Erro ao conectar ao banco:', error.message);
+        console.error('erro ao conectar ao banco:', error.message);
     }
 })();
 

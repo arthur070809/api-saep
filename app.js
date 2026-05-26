@@ -1,3 +1,4 @@
+// ...existing code...
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -10,8 +11,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-const usuarioRoutes = require('./routes/user');
-app.use('/usuarios', usuarioRoutes);
+// ...existing code...
+const produtoRoutes = require('./ROUTES/produto');
+app.use('/produtos', produtoRoutes);
 
 // Rota de teste
 app.get('/test', (req, res) => {
