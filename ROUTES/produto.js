@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// GET /produtos -> lista todos os produtos
-router.get('/', async (req, res) => {
+//get lista todos os produtos
+router.get('/listar', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM produtos');
         res.json(rows);
@@ -14,8 +14,8 @@ router.get('/', async (req, res) => {
 });
 
 
-// POST /produtos -> cria produto
-router.post('/', async (req, res) => {
+//post cria produto
+router.post('/criar', async (req, res) => {
     const { nome, valor, quantidade, categoria } = req.body;
     if (!nome || valor === undefined || quantidade === undefined || !categoria) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios: nome, valor, quantidade, categoria' });
@@ -38,15 +38,38 @@ router.post('/', async (req, res) => {
     }
 });
 
-// GET /produtos/estoque-por-categoria -> total por categoria (view vw_estoque)
-router.get('/estoque-por-categoria', async (req, res) => {
+//get /produtos/valor-por-categoria total (valor * quantidade) por categoria
+router.get('/valor-por-categoria', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT categoria, SUM(quantidade) as total FROM vw_estoque GROUP BY categoria');
-        res.json(rows);
+        const categoriasQuery = req.query.categorias;
+        let categorias = [];
+        if (categoriasQuery) {
+            categorias = categoriasQuery.split(',').map(s => s.trim()).filter(Boolean);
+        }
+
+        let sql = 'SELECT categoria, SUM(valor * quantidade) AS total_valor FROM produtos';
+        const params = [];
+
+        if (categorias.length > 0) {
+            const placeholders = categorias.map(() => '?').join(',');
+            sql += ` WHERE categoria IN (${placeholders})`;
+            params.push(...categorias);
+        }
+
+        sql += ' GROUP BY categoria';
+        const [rows] = await db.query(sql, params);
+
+        const result = rows.map(r => ({
+            categoria: r.categoria,
+            total_valor: Number(r.total_valor) || 0
+        }));
+
+        res.json(result);
     } catch (error) {
-        console.error('Erro ao buscar estoque por categoria:', error);
-        res.status(500).json({ error: 'Erro ao buscar estoque por categoria' });
-    }   
+        console.error('Erro ao calcular valor por categoria:', error.message);
+        res.status(500).json({ error: 'Erro ao calcular valor por categoria' });
+    }
 });
+
 
 module.exports = router;
