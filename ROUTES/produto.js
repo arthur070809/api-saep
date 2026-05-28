@@ -71,5 +71,20 @@ router.get('/valor-por-categoria', async (req, res) => {
     }
 });
 
+//get /produtos/saidas lista todas as saídas em ordem decrescente por data
+router.get('/saidas', async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT *
+            FROM movimentacoes
+            ORDER BY COALESCE(data, created_at, '1970-01-01') DESC
+        `);
+
+        res.json(rows);
+    } catch (error) {
+        console.error('Erro ao listar saídas:', error.message);
+        res.status(500).json({ error: 'Erro ao listar saídas' });
+    }
+});
 
 module.exports = router;
