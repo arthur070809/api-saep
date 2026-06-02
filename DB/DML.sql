@@ -10,7 +10,7 @@ values (now(), "entrada", 10,1),
 (now(), "saida", 15,2),
 (now(), "entrada", 20,3);
 
-create view vw_estoque AS
+CREATE VIEW vw_estoque AS
 select nome, quantidade * valor
 from produtos;
 select * from vw_estoque
