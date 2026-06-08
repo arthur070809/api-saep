@@ -81,7 +81,7 @@ router.post('/registrar-entrada', async (req, res) => {
             [insertDt, 'entrada', qty, produtos_id]
         );
 
-        // Atualiza o estoque do produto
+        // Atualiza o estoque do produtoa
         await conn.query('UPDATE produtos SET quantidade = ? WHERE id = ?', [newQty, produtos_id]);
 
         await conn.commit();
